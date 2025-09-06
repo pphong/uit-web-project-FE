@@ -1,17 +1,20 @@
 import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
+import Dashboard from "../../components/Dashboard";
 import styles from "./HomePage.module.css";
+
 
 const HomePage = () => {
   return (
-    <div className={styles.header}>
+    <div className={styles.ManagementScreen}>
       <Header />
-      <div className={styles.sidebar}>
+      <div className={styles.mainContent}>
         <Sidebar />
-        {/* <Dashboard /> */}
+        <Dashboard />
       </div>
     </div>
   );
 };
+
 
 export default HomePage;
