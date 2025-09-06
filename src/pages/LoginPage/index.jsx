@@ -1,18 +1,32 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import styles from "./LoginPage.module.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/home";
 
-  const onSubmit = (e) => {
+  // Nếu đã đăng nhập rồi thì không cho vào /login nữa
+  useEffect(() => {
+    if (localStorage.getItem("auth")) {
+      navigate("/home", { replace: true });
+    }
+  }, [navigate]);
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const email = data.get("email");
+    const password = data.get("password");
 
-    navigate("/home");
+    // Demo logic: thay bằng call API thực tế
+    // if (res.ok) { localStorage.setItem('auth', token) ... }
+    const ok = email && password; // chỉ để demo
+    if (!ok) return;
+
+    localStorage.setItem("auth", "1"); // flag demo
+    navigate(from, { replace: true });
   };
 
   return (
@@ -34,7 +48,7 @@ export default function LoginPage() {
           <div className={styles.passwordRow}>
             <label className={styles.label}>Mật khẩu *</label>
             <a className={styles.forgotLink} href="#">
-              Forgot your password?
+              Quên mật khẩu?
             </a>
           </div>
           <input
@@ -55,7 +69,7 @@ export default function LoginPage() {
         </p>
 
         <div className={styles.divider}>
-          <span>or</span>
+          <span>hoặc</span>
         </div>
 
         <button className={`${styles.btnSocial} ${styles.google}`}>
@@ -63,7 +77,7 @@ export default function LoginPage() {
             src="https://www.svgrepo.com/show/475656/google-color.svg"
             alt="Google"
           />
-          Sign in with Google
+          Đăng nhập với Google
         </button>
 
         <button className={`${styles.btnSocial} ${styles.facebook}`}>
@@ -71,7 +85,7 @@ export default function LoginPage() {
             src="https://www.svgrepo.com/show/452196/facebook-1.svg"
             alt="Facebook"
           />
-          Sign in with Facebook
+          Đăng nhập với Facebook
         </button>
       </div>
     </div>

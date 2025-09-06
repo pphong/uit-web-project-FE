@@ -1,0 +1,133 @@
+/* Container chiếm trọn chiều cao thiết bị, căn giữa, không cho scroll */
+.container {
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  padding-inline: 16px;
+  background: linear-gradient(180deg, #fff8e1, #fff);
+  overflow: hidden;  
+  box-sizing: border-box;
+  scrollbar-gutter: stable;
+}
+
+/* Card gọn gàng, vừa màn hình */
+.card {
+  width: min(92vw, 420px);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(17, 17, 17, 0.08);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.title {
+  margin: 0 0 6px 0;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.form {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  color: #555;
+}
+
+.input {
+  height: 42px;
+  border: 1px solid #eceef2;
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 15px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #ffc107;
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.15);
+}
+
+.passwordRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.forgotLink {
+  font-size: 13px;
+  color: #0070f3;
+  text-decoration: none;
+}
+
+.btnLogin {
+  margin-top: 10px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: #ffc107;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.signupText {
+  text-align: center;
+  font-size: 14px;
+  margin: 6px 0 0;
+}
+
+.divider {
+  display: grid;
+  place-items: center;
+  position: relative;
+  margin: 6px 0;
+  color: #8a8a8f;
+  font-size: 13px;
+}
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  height: 1px;
+  width: 40%;
+  background: #eceef2;
+  top: 50%;
+}
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+.btnSocial {
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid #eceef2;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btnSocial img {
+  width: 20px;
+  height: 20px;
+}
+
+.google:hover { background: #fafafa; }
+.facebook {
+  border-color: #e8eefc;
+}
+.facebook:hover { background: #f4f7ff; }
+
+/* Đảm bảo nội dung card không tràn gây scroll */
+.card * {
+  max-width: 100%;
+  box-sizing: border-box;
+}

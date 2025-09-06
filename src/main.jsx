@@ -1,6 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import Providers from "./providers/Providers";
+import "./index.css";
 
 createRoot(document.getElementById("root")).render(
   <Providers>
