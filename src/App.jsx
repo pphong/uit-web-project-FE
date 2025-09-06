@@ -10,6 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
         {/* Chỉ cho vào nếu đã đăng nhập */}
         <Route element={<RequireAuth />}>
@@ -18,9 +19,6 @@ function App() {
 
         {/* Lạc đường → về /login */}
         <Route path="*" element={<Navigate to="/login" replace />} />
-
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/home" element={<HomePage />} />
       </Routes>
     </BrowserRouter>
   );

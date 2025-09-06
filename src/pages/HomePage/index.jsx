@@ -1,13 +1,12 @@
-import React from "react";
 import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
 import styles from "./HomePage.module.css";
 
-const ManagementScreen = () => {
+const HomePage = () => {
   return (
-    <div className={styles.managementScreen}>
+    <div className={styles.header}>
       <Header />
-      <div className={styles.mainContent}>
+      <div className={styles.sidebar}>
         <Sidebar />
         {/* <Dashboard /> */}
       </div>
@@ -15,4 +14,4 @@ const ManagementScreen = () => {
   );
 };
 
-export default ManagementScreen;
+export default HomePage;
