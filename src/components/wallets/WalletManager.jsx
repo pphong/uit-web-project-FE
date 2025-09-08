@@ -103,6 +103,8 @@ export default function WalletManager() {
   const [topupAmount, setTopupAmount] = useState(""); // formatted string
   const [topupNote, setTopupNote] = useState("Nạp tiền");
 
+  console.log(defaultWalletId);
+
   /* ---------------- fetchers ---------------- */
   async function fetchWallets() {
     setLoading(true);
@@ -539,7 +541,7 @@ export default function WalletManager() {
                   />
                 </div>
 
-                <div className={styles.fieldInline}>
+                {/* <div className={styles.fieldInline}>
                   <label className={styles.checkbox}>
                     <input
                       type="checkbox"
@@ -553,7 +555,7 @@ export default function WalletManager() {
                     />
                     <span>Đặt làm mặc định</span>
                   </label>
-                </div>
+                </div> */}
               </div>
 
               <div className={styles.modalActions}>

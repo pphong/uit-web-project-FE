@@ -386,3 +386,24 @@
 .txnDate {
   font-family: "Merriweather", "Lora", "Noto Serif", serif;
 }
+
+
+/* báo lỗi dưới ô nhập */
+.errorText {
+  margin-top: 6px;
+  color: #e11d48;           /* rose-600 */
+  font-size: 12px;
+}
+
+/* hint nhỏ */
+.hintText {
+  margin-top: 6px;
+  color: #64748b;           /* slate-500 */
+  font-size: 12px;
+}
+
+/* viền đỏ khi invalid */
+.inputInvalid {
+  border-color: #ef4444 !important;                 /* red-500 */
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}

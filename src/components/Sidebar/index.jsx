@@ -200,7 +200,7 @@ function EditProfileModal({ open, onClose, onSave }) {
                 name="lastName"
                 value={form.lastName}
                 onChange={handle}
-                placeholder="Nguyen"
+                placeholder="Họ của bạn"
                 required
                 disabled={loading}
               />
@@ -213,7 +213,7 @@ function EditProfileModal({ open, onClose, onSave }) {
                 name="firstName"
                 value={form.firstName}
                 onChange={handle}
-                placeholder="Trong"
+                placeholder="Tên của bạn"
                 required
                 disabled={loading}
               />

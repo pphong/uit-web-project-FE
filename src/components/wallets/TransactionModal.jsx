@@ -89,6 +89,21 @@ export default function TransactionModal({
     note: "",
   });
 
+  // ví đã chọn & số dư hiện tại
+  const selectedWallet = useMemo(
+    () => wallets.find((w) => (w.id || w._id) === form.walletId),
+    [wallets, form.walletId]
+  );
+  const walletBalance = selectedWallet?.balance ?? 0;
+  const walletCurrency = selectedWallet?.currency || "VND";
+
+  // số tiền người dùng nhập (number)
+  const numericAmount = useMemo(() => parseMoney(form.amount), [form.amount]);
+
+  // ràng buộc: chi tiêu không vượt số dư ví
+  const exceedBalance =
+    type === "expense" && numericAmount > Number(walletBalance || 0);
+
   // Khi mở modal → init lại form
   useEffect(() => {
     if (!open) return;
@@ -231,7 +246,8 @@ export default function TransactionModal({
     form.walletId &&
     parseMoney(form.amount) > 0 &&
     form.categoryId &&
-    form.labelIds.length > 0;
+    form.labelIds.length > 0 &&
+    !exceedBalance;
 
   const onChangeAmount = (e) => {
     const formatted = formatMoney(e.target.value);
@@ -256,6 +272,11 @@ export default function TransactionModal({
   async function submit(e, keepOpen = false) {
     e.preventDefault();
     if (!canSave) return;
+
+    // chặn chi vượt số dư
+    if (exceedBalance) {
+      return;
+    }
 
     try {
       const raw = parseMoney(form.amount);
@@ -341,6 +362,11 @@ export default function TransactionModal({
               placeholder="0"
               required
             />
+            {exceedBalance && (
+              <div className={styles.errorText}>
+                Số tiền chi vượt quá số dư ví
+              </div>
+            )}
           </div>
 
           {/* Hạng mục */}
