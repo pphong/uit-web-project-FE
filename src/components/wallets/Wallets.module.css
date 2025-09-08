@@ -1,0 +1,388 @@
+/* ========== Layout ========== */
+
+/* Wallets.module.css */
+@import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600&family=Vidaloka&display=swap');
+
+
+:root {
+  --app-header-h: 64px;
+}
+
+
+.page{
+  min-height: 100vh;
+  overflow: auto;
+  padding-inline: 16px;
+  box-sizing: border-box;
+}
+
+/* ========== Header ========== */
+.walletHeader{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0 8px;
+}
+.title{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* ========== Buttons ========== */
+.iconBtn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.iconBtn:hover{ background:#f8fafc; transform: translateY(-1px); }
+
+.btnPrimary{
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(180deg, #2ea5ff, #1888ff);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  box-shadow: 0 6px 18px rgba(30, 136, 229, .25);
+}
+.btnPrimary:hover{ filter: brightness(1.05); }
+
+.btnGhost{
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background:#fff;
+  color:#0f172a;
+  display:inline-flex; align-items:center; gap:6px;
+  cursor:pointer;
+}
+.btnGhost:hover{ background:#f8fafc; }
+
+.btnSoft{
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 12px;
+  background:#edf6ff;
+  color:#0b66d0;
+  border: 1px solid #d6e9ff;
+  display:inline-flex; align-items:center; gap:6px;
+  cursor:pointer;
+}
+.btnSoft:hover{ background:#e6f1ff; }
+
+/* ========== Cards/Grid ========== */
+.walletGrid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  padding-bottom: 24px;
+}
+.walletCard{
+  background:#fff;
+  border: 1px solid #eef2f7;
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 10px 24px rgba(2, 6, 23, .06);
+}
+.walletHead{
+  display:flex; align-items:center; gap:12px;
+}
+.walletIcon{
+  width:40px; height:40px; border-radius:12px;
+  background:linear-gradient(180deg,#e6f2ff,#d7ecff);
+  display:flex; align-items:center; justify-content:center;
+  color:#0b66d0;
+  flex: 0 0 auto;
+}
+.walletInfo{ flex:1 1 auto; min-width:0; }
+.walletName{ font-weight:700; }
+.walletDesc{ font-size:13px; color:#475569; }
+.badge{
+  display:inline-flex; align-items:center; gap:4px;
+  font-size: 11px; font-weight:600;
+  padding: 2px 8px; margin-left:6px;
+  border-radius: 999px;
+  background:#fff7ed; color:#b45309; border:1px solid #ffe3c0;
+}
+
+.rowActions{ display:flex; gap:6px; }
+.walletActions{
+  margin-top: 12px;
+  display:flex; gap:8px; flex-wrap:wrap;
+}
+
+/* ========== Recent list ========== */
+.recentList{
+  margin-top: 10px;
+  border-top: 1px dashed #e5e7eb;
+  padding-top: 8px;
+  --txn-font: 'Noto Serif', Georgia, 'Times New Roman', serif;
+  --txn-amount-font: 'Roboto Slab', 'Noto Serif', Georgia, serif;
+  padding-top: 6px;
+}
+
+.recentList .txnRow {
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
+}
+
+.txnRow{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 6px; border-radius:10px;
+}
+.txnRow:hover{ background:#f8fafc; }
+.txnDot{
+  width:10px; height:10px; border-radius:999px; flex:0 0 auto;
+  background:#94a3b8;
+}
+.txnDot[data-type="expense"]{ background:#ef4444; }
+.txnDot[data-type="income"]{ background:#10b981; }
+.txnText{ flex:1 1 auto; min-width:0; color:#334155; font-size: 13.5px; }
+.txnAmount{
+  font-weight:700;
+}
+.txnAmount[data-type="expense"]{ color:#ef4444; }
+.txnAmount[data-type="income"]{ color:#059669; }
+.emptySmall{ color:#64748b; font-size:13px; padding:6px 2px; }
+
+/* ========== Empty/Loading ========== */
+.empty, .loading{
+  padding: 28px 12px;
+  color:#64748b;
+}
+
+/* ========== Modal Base ========== */
+.modalOverlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, .35); /* mờ nền */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;           /* canh từ trên xuống (không dính mép) */
+  padding: 16px;
+  padding-top: calc(var(--app-header-h) + 24px); /* chừa chỗ cho header */
+  overflow: auto;                    /* nếu modal cao quá thì scroll trong overlay */
+}
+.modal{
+  width: min(760px, 96vw);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, .25);
+  overflow: hidden;                  /* bo góc phần header/body */
+}
+.modalHead{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eef2f7;
+}
+.modalHead h4{ margin:0; font-size: 16px; font-weight: 700; }
+
+/* ========== Form ========== */
+.form{ padding: 14px 16px 16px; }
+.formGrid{
+  display:grid; gap: 12px;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+}
+@media (max-width: 720px){
+  .formGrid{ grid-template-columns: 1fr; }
+}
+
+/* mobile */
+@media (max-width: 640px) {
+  .modalOverlay {
+    padding: 12px;
+    padding-top: calc(var(--app-header-h) + 12px);
+  }
+  .modal {
+    width: 100%;
+    border-radius: 12px;
+  }
+}
+
+.field{ display:flex; flex-direction:column; gap:6px; }
+.field label{ font-size: 13px; color:#334155; font-weight:600; }
+
+.input, .select, .textarea{
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background:#fff;
+  padding: 10px 12px;
+  font-size: 14px;
+  color:#0f172a;
+  outline: none;
+  transition: border .15s ease, box-shadow .15s ease;
+}
+.input:focus, .select:focus, .textarea:focus{
+  border-color:#93c5fd;
+  box-shadow: 0 0 0 3px rgba(147,197,253,.35);
+}
+.textarea{ resize: vertical; }
+
+.selectWrap{ position: relative; }
+.select{ appearance: none; }
+.chev{
+  position:absolute; right:10px; top:50%; transform: translateY(-50%);
+  pointer-events: none; opacity:.65;
+}
+
+.inputIcon{ position: relative; }
+.inputIcon > svg{
+  position:absolute; right:10px; top:50%; transform: translateY(-50%);
+  opacity:.65;
+}
+
+/* Type switch (Expense/Income) */
+.typeSwitch{
+  display:flex; gap:8px; margin-bottom: 8px;
+}
+.typeBtn{
+  height: 34px; padding: 0 10px; border-radius: 999px;
+  border:1px solid #e5e7eb; background:#fff; cursor:pointer;
+  display:flex; align-items:center; gap:6px; color:#0f172a;
+}
+.typeBtn:hover{ background:#f8fafc; }
+.typeActive{ border-color:#93c5fd; background:#edf6ff; color:#0b66d0; }
+
+/* Quick category chips */
+.quickChips{ display:flex; flex-wrap:wrap; gap:8px; margin-top: 8px; }
+.chip{
+  display:inline-flex; align-items:center; gap:6px;
+  padding: 6px 10px; border-radius: 999px;
+  border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-size: 13px;
+}
+.chip:hover{ background:#f8fafc; }
+.chipActive{ background:#e6f1ff; border-color:#93c5fd; color:#0b66d0; }
+
+/* Misc */
+.fieldInline{ margin-top: 4px; }
+.checkbox{ display:flex; align-items:center; gap:8px; font-size: 14px; }
+
+.modalActions{
+  display:flex; justify-content:flex-end; gap:8px;
+  padding-top: 12px; border-top:1px solid #eef2f7;
+}
+
+
+/* Hộp chứa các chip */
+.labelsBox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #e5e7eb;        /* slate-200 */
+  border-radius: 12px;
+  background: #f8fafc;              /* slate-50 */
+}
+
+/* Chip mặc định */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 13px;
+  line-height: 1;
+  color: #0f172a;                    /* slate-900 */
+  transition: all .15s ease;
+}
+
+.pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06); /* slate shadow */
+}
+
+/* Chip đã chọn */
+.pillOn {
+  border-color: #2563eb;             /* blue-600 */
+  background: #eff6ff;               /* blue-50 */
+  color: #1d4ed8;                    /* blue-700 */
+}
+
+/* Chấm màu trong chip */
+.pillDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+  box-shadow: 0 0 0 2px #ffffff inset, 0 0 0 1px rgba(0,0,0,0.04);
+}
+
+
+/* Font & tone chỉ cho danh sách giao dịch gần đây */
+.recentList {
+  --txn-font: 'Zilla Slab', Georgia, 'Times New Roman', serif;
+  --txn-amount-font: 'Vidaloka', 'Zilla Slab', Georgia, serif;
+  padding-top: 6px;
+}
+
+.recentList .txnRow {
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  transition: transform .12s ease, background .12s ease, box-shadow .12s ease;
+}
+
+.recentList .txnRow:hover {
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(18, 38, 63, 0.06);
+}
+
+/* mô tả */
+.recentList .txnText {
+  font-family: "Lora", "Merriweather", "Noto Serif", serif;
+  font-weight: 600;
+  letter-spacing: .2px;
+  color: #0f172a;
+}
+.recentList .txnText em {
+  font-family: "Lora", "Merriweather", "Noto Serif", serif;
+  font-style: normal;
+  font-weight: 400;
+  opacity: .7;
+  margin-left: 6px;
+}
+
+/* số tiền “artsy” hơn, canh đều chữ số */
+.recentList .txnAmount {
+  font-family: var(--txn-amount-font);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums; /* số thẳng cột */
+  letter-spacing: .3px;
+}
+
+
+.recentList .txnAmount[data-type="income"] { color: #0ea5e9; }
+.recentList .txnAmount[data-type="expense"] { color: #ef4444; }
+
+
+.recentList .txnDot {
+  width: 10px; height: 10px; border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, .04);
+}
+
+.txnDate {
+  font-family: "Merriweather", "Lora", "Noto Serif", serif;
+}

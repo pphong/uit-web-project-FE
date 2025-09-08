@@ -6,8 +6,7 @@ import { AiOutlineCheckCircle } from "react-icons/ai";
 import styles from "./RegisterPage.module.css";
 
 const MODAL_STAY_MS = 1000; // thời gian hiển thị modal trước khi điều hướng
-
-const BASE_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -19,7 +18,7 @@ export default function Register() {
     setForm((s) => ({ ...s, [e.target.name]: e.target.value }));
 
   const fetchAPI = async () => {
-    const res = await fetch(`${BASE_URL}/api/v1/auth/register`, {
+    const res = await fetch(`${API_URL}/api/v1/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,88 +1,251 @@
+:root {
+  --brand: #08b3ff;     /* xanh logo/brand */
+  --text: #111827;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+}
+
 .header {
-  height: 60px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
   display: flex;
   align-items: center;
+  gap: 12px;
+  padding: 0 16px;
   justify-content: space-between;
-  padding: 0 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.headerLeft {
+/* left */
+.left {
   display: flex;
   align-items: center;
+  gap: 10px;
+  min-width: 260px;
 }
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.logoBox {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #66d9ff 0%, #10b4ff 55%, #0088ff 100%);
+  box-shadow: 0 6px 18px rgba(0, 149, 255, 0.25);
 }
-
-.logoIcon {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
-
-.logoText {
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-}
-
-.headerCenter {
-  flex: 1;
-  display: flex;
-  justify-content: right;
-}
-
-.greeting {
-  font-size: 16px;
-  color: #333;
-  font-weight: 500;
-}
-
-.headerRight {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.notificationBtn {
-  background: none;
-  border: none;
+.logoM {
+  color: #fff;
+  font-weight: 800;
   font-size: 20px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background-color 0.2s;
+  letter-spacing: 0.5px;
+}
+.brand {
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 18px;
+  white-space: nowrap;
 }
 
-.notificationBtn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.userProfile {
+/* center */
+.center1 {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
+}
+
+.greet {
+  color: var(--text);
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.greet strong {
+  font-weight: 800;
+}
+.wave {
+  margin-left: 6px;
+}
+
+/* right */
+.right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.iconBtn {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: box-shadow 120ms ease, transform 50ms ease;
+}
+.iconBtn:hover {
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
+}
+.iconBtn:active {
+  transform: translateY(1px);
+}
+.dot {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  background: #10b981; /* xanh thông báo */
+  border-radius: 999px;
+  box-shadow: 0 0 0 2px #fff;
 }
 
 .avatar {
-  width: 36px;
-  height: 36px;
-  background: #007bff;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+
+/* Avatar button để focus + click */
+.avatarBtn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+/* Overlay để click-outside */
+.menuOverlay{
+  position: fixed;
+  inset: 0;
+  background: transparent; /* không làm tối */
+  z-index: 90;
+}
+
+/* Card kiểu modal nhỏ giống ảnh */
+.accountCard{
+  position: absolute;
+  top: calc(64px + 8px); /* 64px = chiều cao header */
+  right: 10px;
+  width: 340px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 18px 46px rgba(0,0,0,.15);
+  z-index: 99;
+  animation: pop .16s ease-out;
+}
+/* mũi nhọn chỉ lên avatar */
+.accountCard::before{
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 24px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #fff;
+  filter: drop-shadow(0 -1px 0 rgba(0,0,0,.06));
+}
+@keyframes pop{
+  from{ opacity:0; transform: translateY(-6px) scale(.98); }
+  to  { opacity:1; transform: translateY(0) scale(1); }
+}
+
+.accTop{
+  padding: 18px 16px 12px;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+}
+.accAvatarLg{
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  background: var(--brand, #08b3ff);
+  color: #fff;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+}
+.accName{
+  margin-top: 6px;
+  font-weight: 800;
+  color: #0f172a; /* đậm như ảnh */
+  font-size: 18px;
+}
+.accEmail{
+  font-size: 13px;
+  color: #9aa3af; /* xám nhạt */
+}
+
+.accDivider{
+  height: 1px;
+  background: #e5e7eb;
+}
+
+/* nút hành động */
+.accAction{
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: 14px;
+  gap: 10px;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 0 0 16px 16px;
 }
+.accAction:hover{ background: #f8fafc; }
+
+.danger{ color: #111827; }        /* chữ đen như ảnh demo */
+.danger svg{ color: #111827; }
+
+
+.center2 {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;     /* ép về trái */
+  text-align: left;                /* phòng khi bị override */
+}
+
+/* avatar nhỏ trên header (ảnh) */
+.avatarImg{
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 0 0 2px #fff; /* viền trắng nhẹ như avatar chữ */
+}
+
+/* avatar lớn trong popover (ảnh) */
+.accAvatarImgLg{
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  object-fit: cover;
+  display: block;
+}
+
+/* căn giữa nút đăng xuất trong card */
+

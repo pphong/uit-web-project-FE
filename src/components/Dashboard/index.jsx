@@ -1,257 +1,355 @@
-import React, { useState, useEffect } from 'react';
-// THÊM MỚI: Import Link và useNavigate để chuyển trang
-import { Link, useNavigate} from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import ExpenseDonut from "./ExpenseDonut";
+import styles from "./Dashboard.module.css";
+import { RotateCcw, Search, Book } from "lucide-react";
 import {
-  RefreshCcw,
-  Maximize,
-  BookOpen,
-  Search,
-  BarChart2,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
   PieChart,
-  RotateCcw,
-  Expand
-} from "lucide-react"; 
-import styles from './Dashboard.module.css';
+  Pie,
+  Cell,
+} from "recharts";
+import { useAuth } from "../../contexts/AuthContext";
 
+/* ===== helpers auth/fetch ===== */
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+const pickToken = (state) =>
+  state?.accessToken ||
+  state?.token ||
+  state?.user?.accessToken ||
+  JSON.parse(localStorage.getItem("auth") || "{}").accessToken ||
+  localStorage.getItem("accessToken") ||
+  localStorage.getItem("token") ||
+  "";
 
-const Dashboard = () => {
-    // THÊM MỚI: Khởi tạo useNavigate để chuyển trang
-    const navigate = useNavigate();
-
-    //fake backend (MongoDB)
-    const [stats, setStats] = useState({
-        balance: 0,
-        income: 0,
-        expense: 0,
-        recentNotes: []
+const makeFetchAuth =
+  (token) =>
+  (path, opts = {}) =>
+    fetch(`${API_URL}${path}`, {
+      ...opts,
+      headers: {
+        "Content-Type": "application/json",
+        ...(opts.headers || {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
     });
-    
-    // THÊM MỚI: Hàm xử lý khi nhấn expand icon
-    const handleExpandRecentNotes = () => {
-        navigate('/transactions');
-    };
 
-    //Giả lập gọi API lấy dữ liệu từ backend
+const fmtMoney = (n, ccy = "VND") =>
+  new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: ccy,
+    maximumFractionDigits: ccy === "VND" ? 0 : 2,
+  }).format(Number(n || 0));
+
+/* ====== UI card nhỏ ====== */
+function Card({ title, right, children }) {
+  return (
+    <section className={styles.card}>
+      <header className={styles.cardHead}>
+        <h4>{title}</h4>
+        <div className={styles.cardActions}>{right}</div>
+      </header>
+      <div className={styles.cardBody}>{children}</div>
+    </section>
+  );
+}
+
+/* ====== Dashboard ====== */
+export default function Dashboard() {
+  const { state } = useAuth();
+  const token = pickToken(state);
+  const api = makeFetchAuth(token);
+
+  const [loading, setLoading] = useState(false);
+  const [wallets, setWallets] = useState([]);
+  const [txns, setTxns] = useState([]); // gộp tất cả ví
+  const [expCats, setExpCats] = useState([]);
+
+  // bộ lọc thời gian đơn giản: tháng này / tháng trước
+  const [range, setRange] = useState("this-month");
+
+  const { start, end } = useMemo(() => {
+    const now = new Date();
+    let s, e;
+    if (range === "last-month") {
+      const first = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const last = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        0,
+        23,
+        59,
+        59,
+        999
+      );
+      s = first;
+      e = last;
+    } else {
+      // this-month
+      const first = new Date(now.getFullYear(), now.getMonth(), 1);
+      const last = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+      );
+      s = first;
+      e = last;
+    }
+    return { start: s, end: e };
+  }, [range]);
+
+  const load = async () => {
+    setLoading(true);
+    try {
+      // 1) wallets
+      const rw = await api(`/api/v1/wallets`);
+      const jw = await rw.json().catch(() => ({}));
+      const list = Array.isArray(jw?.data?.wallets) ? jw.data.wallets : [];
+      const ws = list.map((w) => ({
+        id: w._id || w.id,
+        name: w.name,
+        currency: w.currency || "VND",
+        balance: w.balance ?? w.currentBalance ?? 0,
+      }));
+      setWallets(ws);
+
+      // 2) categories expense (để đặt tên nhóm)
+      const rc = await api(`/api/v1/categories/type/expense`);
+      const jc = await rc.json().catch(() => ({}));
+      setExpCats(Array.isArray(jc?.data?.categories) ? jc.data.categories : []);
+
+      // 3) transactions: gom của mọi ví (page 1, limit 100, sort desc)
+      let all = [];
+      for (const w of ws) {
+        const rt = await api(
+          `/api/v1/transactions/wallet/${w.id}?page=1&limit=100&sort=-date`
+        );
+        const jt = await rt.json().catch(() => ({}));
+        const arr = Array.isArray(jt?.data?.transactions)
+          ? jt.data.transactions
+          : [];
+        // gắn wallet info
+        all = all.concat(arr.map((t) => ({ ...t, _wallet: w })));
+      }
+      // Lọc theo khoảng thời gian
+      const filtered = all.filter((t) => {
+        const d = new Date(t.date || t.createdAt || 0);
+        return d >= start && d <= end;
+      });
+      setTxns(filtered);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // Sau này sẽ thay bằng fetch hoặc axios.get()
-    const fetchData = async () => {
-    //   Giả lập dữ liệu backend trả về
-      const fakeData = {
-        balance: 2000000,
-        income: 0,
-        expense: 5500000,
-        recentNotes: [
-          { id: 1, title: "Sách vở", date: "13/08/2025", amount: 500000, currency: "VND" },
-          { id: 2, title: "Sách vở", date: "13/08/2025", amount: 500000, currency: "VND" },
-          { id: 3, title: "Sách vở", date: "13/08/2025", amount: 500000, currency: "VND" },
-          // THÊM MỚI: Thêm nhiều dữ liệu để test việc giới hạn hiển thị
-          { id: 4, title: "Ăn uống", date: "12/08/2025", amount: 300000, currency: "VND" },
-          { id: 5, title: "Xăng xe", date: "11/08/2025", amount: 200000, currency: "VND" },
-        ]
-      };
+    load();
+  }, [range]);
 
-      //Cập nhật state
-      setStats(fakeData);
-    };
+  // Tính toán tổng/nhóm
+  const totalBalance = useMemo(
+    () => wallets.reduce((s, w) => s + (Number(w.balance) || 0), 0),
+    [wallets]
+  );
 
-    fetchData();
-  }, []); // chạy 1 lần khi load component
+  const { incomeSum, expenseSum } = useMemo(() => {
+    let inc = 0,
+      exp = 0;
+    for (const t of txns) {
+      const amt = Number(t.amount || 0);
+      const type = t.type || (amt >= 0 ? "income" : "expense");
+      if (type === "expense") exp += Math.abs(amt);
+      else inc += Math.abs(amt);
+    }
+    return { incomeSum: inc, expenseSum: exp };
+  }, [txns]);
+
+  // Bar "Tổng quan"
+  const overviewData = useMemo(
+    () => [
+      { name: "Tổng thu", value: incomeSum },
+      { name: "Tổng chi", value: expenseSum },
+    ],
+    [incomeSum, expenseSum]
+  );
+
+  // Donut "Chi tiền theo hạng mục"
+  const expenseByCat = useMemo(() => {
+    const map = new Map();
+    txns.forEach((t) => {
+      const amt = Number(t.amount || 0);
+      const type = t.type || (amt >= 0 ? "income" : "expense");
+      if (type !== "expense") return;
+      const catId = t.categoryId || t.category || "";
+      map.set(catId, (map.get(catId) || 0) + Math.abs(amt));
+    });
+    // đưa tên
+    return Array.from(map.entries()).map(([catId, value]) => {
+      const cat = expCats.find((c) => (c._id || c.id) === catId);
+      return { name: cat?.name || "Khác", value };
+    });
+  }, [txns, expCats]);
+
+  // Giao dịch gần đây (5 cái)
+  const recent = useMemo(
+    () =>
+      [...txns].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5),
+    [txns]
+  );
+
+  const COLORS = [
+    "#ffb020",
+    "#ff6b6b",
+    "#4dabf7",
+    "#63e6be",
+    "#9775fa",
+    "#fab005",
+  ];
 
   return (
-    <div className={styles.dashboard}>
-        <div className={styles.dashboardHeader}>
-            <h1 className={styles.title}>Trang chủ</h1>
-            <div className={styles.controls}>
-            <select className={styles.timeSelect}>
-                <option>Tháng này</option>
-                <option>Tuần này</option>
-                <option>Năm này</option>
+    <div className={styles.wrapper}>
+      {/* hàng 1 */}
+      <div className={styles.gridTwo}>
+        <Card
+          title="Tổng số dư"
+          right={
+            <button className={styles.iconBtn} onClick={load} title="Làm mới">
+              <RotateCcw size={18} />
+            </button>
+          }
+        >
+          <div className={styles.bigNumber}>{fmtMoney(totalBalance)}</div>
+        </Card>
+
+        <Card
+          title="Thu tiền"
+          right={
+            <button className={styles.iconBtn} onClick={load} title="Làm mới">
+              <RotateCcw size={18} />
+            </button>
+          }
+        >
+          {incomeSum > 0 ? (
+            <div className={styles.centerTextGreen}>{fmtMoney(incomeSum)}</div>
+          ) : (
+            <div className={styles.empty}>
+              <Search size={26} />
+              <span>Không có dữ liệu</span>
+            </div>
+          )}
+        </Card>
+      </div>
+
+      {/* hàng 2 */}
+      <div className={styles.gridTwo}>
+        <Card
+          title="Giao dịch gần đây"
+          right={
+            <button className={styles.iconBtn} onClick={load} title="Làm mới">
+              <RotateCcw size={18} />
+            </button>
+          }
+        >
+          {recent.length === 0 ? (
+            <div className={styles.empty}>
+              <Search size={26} />
+              <span>Không có dữ liệu</span>
+            </div>
+          ) : (
+            <ul className={styles.txnList}>
+              {recent.map((t) => {
+                const amt = Number(t.amount || 0);
+                const type = t.type || (amt >= 0 ? "income" : "expense");
+                const sign = type === "expense" ? "-" : "+";
+                const currency = t._wallet?.currency || "VND";
+                const name =
+                  t.categoryName ||
+                  t.note ||
+                  (type === "income" ? "Income" : "Expense");
+                const d = new Date(t.date || Date.now());
+                const dateStr = d.toLocaleDateString("vi-VN");
+                return (
+                  <li key={t._id || t.id} className={styles.txnItem}>
+                    <span className={styles.txnIcon}>
+                      <Book size={18} />
+                    </span>
+                    <div className={styles.txnMeta}>
+                      <div className={styles.txnTitle}>{name}</div>
+                      <div className={styles.txnDate}>{dateStr}</div>
+                    </div>
+                    <div
+                      className={
+                        type === "expense"
+                          ? styles.amountRed
+                          : styles.amountGreen
+                      }
+                    >
+                      {sign}
+                      {fmtMoney(Math.abs(amt), currency)}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </Card>
+
+        <ExpenseDonut />
+      </div>
+
+      {/* hàng 3 – Tổng quan */}
+      <Card
+        title="Tổng quan"
+        right={
+          <div className={styles.rowGap}>
+            <select
+              className={styles.select}
+              value={range}
+              onChange={(e) => setRange(e.target.value)}
+            >
+              <option value="this-month">Tháng này</option>
+              <option value="last-month">Tháng trước</option>
             </select>
+            <button className={styles.iconBtn} onClick={load} title="Làm mới">
+              <RotateCcw size={18} />
+            </button>
+          </div>
+        }
+      >
+        <div className={styles.chartBox}>
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={overviewData} barSize={42}>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip formatter={(v) => fmtMoney(v)} />
+              <Bar dataKey="value" radius={[8, 8, 0, 0]} fill="#e03131" />
+            </BarChart>
+          </ResponsiveContainer>
+          <div className={styles.overviewNums}>
+            <div>
+              <span className={styles.muted}>Tổng thu</span>
+              <div className={styles.greenText}>{fmtMoney(incomeSum)}</div>
             </div>
+            <div>
+              <span className={styles.muted}>Tổng chi</span>
+              <div className={styles.redText}>{fmtMoney(expenseSum)}</div>
+            </div>
+          </div>
         </div>
-
-        <div className={styles.statsGrid}>
-            {/* Tổng số dư */}
-            <div className={styles.statCard}>
-                <div className={styles.statHeader}>
-                    <h3>Tổng số dư</h3>
-                    <button className={styles.iconBtn}>
-                        <RefreshCcw size={18} />
-                    </button>
-                </div>
-                    {stats.balance === 0 ? (
-                        <div className={styles.emptyState}>
-                            <Search size={32} color="#ccc" />
-                            <p>Không có dữ liệu</p>
-                        </div>
-                    ) : (
-                        <div className={styles.statValue}>{stats.balance.toLocaleString()} đ</div>
-                    )}
-            </div>
-
-            {/* Thu tiền */}
-            <div className={styles.statCard}>
-                <div className={styles.statHeader}>
-                    <h3> Thu tiền </h3>
-                    <div className={styles.statIcons}>
-                        <button className={styles.iconBtn}>
-                            <RefreshCcw size={18} />
-                        </button>
-                        <button className={styles.iconBtn}>
-                            <Maximize size={18} />
-                        </button>
-                    </div>
-                    </div>
-                {stats.income === 0 ? (
-                    <div className={styles.emptyState}>
-                    <Search size={32} color="#ccc" />
-                    <p>Không có dữ liệu</p>
-                    </div>
-                ) : (
-                    <div className={styles.statValue}>{stats.income.toLocaleString()} đ</div>
-                )}
-            </div>
-
-            {/* Giao dịch gần đây */}
-            <div className={styles.statCard}>
-                <div className={styles.statHeader}>
-                    <h3>Giao dịch gần đây</h3>
-                    <div className={styles.statIcons}>
-                        <button className={styles.iconBtn}>
-                            <RotateCcw size={18} />
-                        </button>
-                        {/* SỬA ĐỔI: Thêm onClick handler cho expand button */}
-                        <button className={styles.iconBtn} onClick={handleExpandRecentNotes}>
-                            <Expand size={18} />
-                        </button>
-                    </div>
-                </div>
-
-                <div className={styles.recentNote}>
-                    {/*Kiểm tra nếu không có ghi chú */}
-                    {stats.recentNotes.length === 0 ? (
-                        <div className={styles.emptyState}>
-                            <Search size={32} color="#ccc" />
-                            <p>Không có dữ liệu</p>
-                        </div>
-                    ) : (
-                    /*Có dữ liệu - SỬA ĐỔI: Giới hạn chỉ hiển thị tối đa 3 items*/
-                    stats.recentNotes.slice(0, 3).map(note => (
-                        <div className={styles.noteItem} key={note.id}>
-                            <div className={styles.noteIcon}>
-                                <BookOpen size={18} color="#ff9800" />
-                            </div>
-                            <div className={styles.noteContent}>
-                                <div className={styles.noteTitle}>{note.title}</div>
-                                <div className={styles.noteDate}>{note.date}</div>
-                            </div>
-                            <div className={styles.noteAmount}>
-                                <span className={styles.amount}>
-                                    {note.amount.toLocaleString()} đ
-                                </span>
-                            </div>
-                        </div>
-                    ))
-                    )}
-                </div>
-            </div>
-        </div>
-
-        <div className={styles.chartSection}>
-            {/* Tổng quan */}
-            <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                    <h3>
-                    <BarChart2 size={18} color="#007bff" style={{ marginRight: 6 }} />
-                    Tổng quan
-                    </h3>
-                    <button className={styles.iconBtn}>
-                    <RefreshCcw size={18} />
-                    </button>
-                </div>
-
-                <div className={styles.chartContainer}>
-                    <div className={styles.barChart}>
-                        {/*Tính tỷ lệ */}
-                        {(() => {
-                            const maxValue = Math.max(stats.income, stats.expense, 1);
-                            const maxHeight = 150; // chiều cao tối đa của cột
-                            const incomeHeight = (stats.income / maxValue) * maxHeight;
-                            const expenseHeight = (stats.expense / maxValue) * maxHeight;
-
-                            return (
-                            <div className={styles.bars}>
-                                <div
-                                    className={styles.barIncome}
-                                    style={{ height: `${incomeHeight}px` }}
-                                ></div>
-                                <div
-                                    className={styles.barExpense}
-                                    style={{ height: `${expenseHeight}px` }}
-                                ></div>
-                            </div>
-                            );
-                        })()}
-
-                        <div className={styles.chartValues}>
-                            <div className={styles.incomeValue}>
-                                <span>Tổng thu</span>
-                                <span>{stats.income.toLocaleString()} đ</span>
-                            </div>
-                            <div className={styles.expenseValue}>
-                                <span>Tổng chi</span>
-                                <span>{stats.expense.toLocaleString()} đ</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            {/* Biểu đồ tròn (pie chart) */}
-            <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                    <h3>
-                        <PieChart size={18} color="#e91e63" style={{ marginRight: 6 }} />
-                        Chi tiền
-                    </h3>
-                    <div className={styles.chartIcons}>
-                        <button className={styles.iconBtn}>
-                            <RefreshCcw size={18} />
-                        </button>
-                        <button className={styles.iconBtn}>
-                            <Maximize size={18} />
-                        </button>
-                    </div>
-                </div>
-                <div className={styles.pieChartContainer}>
-                    <div className={styles.pieChart}>
-                        <div className={styles.donutChart}>
-                            <div className={styles.donutCenter}>
-                                <span className={styles.percentage}>
-                                    {stats.income > 0
-                                    ? Math.round((stats.expense / stats.income) * 100)
-                                    : 0}
-                                    %
-                                </span>
-                            </div>
-                        </div>
-                        <div className={styles.chartLegend}>
-                            <div className={styles.legendItem}>
-                                <span
-                                    className={styles.legendColor}
-                                    style={{ backgroundColor: '#ffc107' }}
-                                ></span>
-                                <span>Con cái</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </Card>
     </div>
   );
-};
-
-export default Dashboard;
+}

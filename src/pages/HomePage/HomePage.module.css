@@ -1,25 +1,19 @@
-.header {
+/* src/pages/HomePage/HomePage.module.css */
+.page {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  min-width: 1024px;
 }
-
-.sidebar {
-  display: flex;
+.body {
   flex: 1;
-  overflow: hidden;
+  min-height: 0;
+  display: flex;           /* Sidebar + Content nằm ngang */
 }
-
-.managementScreen {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-}
-
-.mainContent {
-  display: flex;
+.content {
   flex: 1;
-  overflow: hidden;
+  min-width: 0;
+  padding: 16px 24px;
+  overflow: auto;          /* scroll phần nội dung */
+  background: #f7fafc;     
 }

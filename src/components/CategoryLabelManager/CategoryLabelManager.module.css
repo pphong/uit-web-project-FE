@@ -1,0 +1,151 @@
+:root{
+  --brand:#08b3ff;
+  --line:#e5e7eb;
+  --muted:#6b7280;
+  --text:#0f172a;
+}
+
+.wrapper{
+  width:min(1100px, 96vw);
+  margin: 16px auto;
+}
+
+.headerRow{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:12px;
+}
+
+.tabs{ display:flex; gap:8px; }
+.tab{
+  height:38px; padding:0 14px; border-radius:999px; border:1px solid var(--line);
+  background:#fff; cursor:pointer; font-weight:700; color:#334155;
+}
+.tabActive{ background: #eff8ff; border-color:#cfe9ff; color:#0f172a; }
+
+.headerActions{ display:flex; gap:8px; }
+.btnPrimary, .btnSoft, .btnGhost{
+  height:38px; border-radius:10px; padding:0 12px; border:1px solid var(--line); cursor:pointer;
+  background:#fff; display:inline-flex; align-items:center; gap:8px; font-weight:700;
+}
+.btnPrimary{ background:var(--brand); color:#fff; border-color:var(--brand); }
+.btnSoft{ background:#f1f5f9; }
+.btnGhost{ background:#fff; }
+
+.grid{
+  display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;
+}
+@media (max-width: 920px){ .grid{ grid-template-columns: 1fr; } }
+
+.loading, .empty{
+  padding:24px; background:#fff; border:1px solid var(--line); border-radius:12px; text-align:center;
+}
+
+.card{
+  background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px;
+}
+.cardHead{
+  display:flex; align-items:center; gap:10px;
+}
+.catIcon{
+  width:40px; height:40px; border-radius:10px; display:grid; place-items:center; color:#0f172a;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05) inset;
+}
+.catInfo{ min-width:0; flex:1; }
+.catName{ font-weight:800; color:var(--text); }
+.catType{ font-size:12px; color:var(--muted); }
+.rowActions{ display:flex; gap:6px; }
+.iconBtn{
+  width:32px; height:32px; display:grid; place-items:center; border:1px solid var(--line);
+  background:#fff; border-radius:8px; cursor:pointer;
+}
+
+.labels{
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;
+}
+.labelChip{
+  display:inline-flex; align-items:center; gap:8px; padding:6px 8px; background:#f8fafc; border:1px solid #e2e8f0;
+  border-radius:999px; font-size:13px;
+}
+.labelText{ font-weight:600; }
+.dot{ width:8px; height:8px; border-radius:999px; }
+
+.chipBtn{
+  border:none; background:transparent; padding:0 2px; cursor:pointer; color:#64748b;
+}
+.cardFoot{ margin-top:10px; display:flex; justify-content:flex-end; }
+.btnSoft{ background:#eaf6ff; border-color:#cfe9ff; }
+
+.modalOverlay{
+  position:fixed; inset:0; background:rgba(17,24,39,.45); z-index:1200;
+  display:grid; place-items:center;
+}
+.modal{
+  width:min(520px, 96vw); background:#fff; border-radius:14px; border:1px solid var(--line);
+  box-shadow:0 24px 60px rgba(0,0,0,.22);
+}
+.modalHead{
+  height:52px; padding:0 12px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--line);
+}
+.modalHead h4{ font-size:18px; font-weight:800; }
+
+.form{ padding:12px; display:grid; gap:12px; }
+.formRow{ display:flex; flex-direction:column; gap:6px; }
+.input, .select{
+  height:40px; border:1px solid var(--line); border-radius:10px; padding:0 12px; outline:none;
+}
+.selectWrap{ position:relative; }
+.chev{ position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#64748b; pointer-events:none; }
+.color{ width:56px; height:36px; padding:0; border:1px solid var(--line); border-radius:8px; background:#fff; }
+
+.icons{ display:flex; flex-wrap:wrap; gap:8px; }
+.iconPick{
+  width:36px; height:36px; display:grid; place-items:center; border:1px solid var(--line); border-radius:8px; background:#fff;
+  position:relative; cursor:pointer;
+}
+.iconPickActive{ outline: 2px solid var(--brand); }
+.check{ position:absolute; right:-6px; top:-6px; background:#10b981; color:#fff; border-radius:999px; padding:2px; }
+
+.modalActions{
+  display:flex; justify-content:flex-end; gap:8px; padding: 8px 12px 12px;
+}
+
+
+/* Phần bọc toàn trang của component – cho phép scroll riêng nếu body bị khoá */
+.page{
+  min-height: 100vh;
+  overflow: auto;
+  padding-inline: 16px;        /* gutter 2 bên theo viewport */
+  box-sizing: border-box;
+}
+
+/* Container chính: căn giữa + padding 2 bên để không dính sát mép */
+.wrapper{
+  width: 100%;
+  max-width: none;              /* bỏ giới hạn 1200 + auto-center */
+  margin: 0;                    /* không đẩy sang phải khi sidebar mở */
+  padding: 16px 0 56px;         /* top/bottom padding, 2 bên đã có ở .page */
+  box-sizing: border-box;
+}
+
+/* Header + nút */
+.headerRow{ 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* Lưới card: tự co theo bề rộng, không ép 2 cột cố định */
+.grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 16px;
+}
+
+/* Tablet/điện thoại: 1 cột */
+@media (max-width: 1024px){
+  .page{ padding-inline: 12px; }
+  .grid{ grid-template-columns: 1fr; }
+}
