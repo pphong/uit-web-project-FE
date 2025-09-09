@@ -309,10 +309,14 @@ export default function Sidebar({ activeKey = "home", onSelect = () => {} }) {
       )}
     >
       {/* Top action */}
-      <div className={styles.topAction}>
+      <div
+        className={styles.topAction}
+        data-active={activeKey === "search" || undefined}
+        onClick={() => onSelect("search")}
+      >
         <button type="button" className={styles.addBtn} title="Thêm ghi chép">
           <Plus size={18} />
-          <span>Quản lý danh mục</span>
+          <span>Tìm kiếm mọi thứ</span>
         </button>
         <button
           type="button"
@@ -324,6 +328,7 @@ export default function Sidebar({ activeKey = "home", onSelect = () => {} }) {
       </div>
 
       {/* Nav */}
+
       <nav className={styles.nav}>
         <Item
           icon={Tags}

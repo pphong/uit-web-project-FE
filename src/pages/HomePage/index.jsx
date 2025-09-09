@@ -6,6 +6,7 @@ import CategoryLabelManager from "../../components/CategoryLabelManager";
 import WalletManager from "../../components/wallets/WalletManager";
 import Dashboard from "../../components/Dashboard";
 import ComingSoon from "../../components/ComingSoon";
+import AdvancedSearch from "../../components/Search/AdvancedSearch";
 import styles from "./HomePage.module.css";
 
 const HomePage = () => {
@@ -26,6 +27,7 @@ const HomePage = () => {
           {active === "note-single" && <ComingSoon title="Ghi chép thu chi" />}
           {active === "note-batch" && <ComingSoon title="Ghi chép hàng loạt" />}
           {active === "note-excel" && <ComingSoon title="Nhập bằng Excel" />}
+          {active === "search" && <AdvancedSearch />}
         </main>
       </div>
     </div>
