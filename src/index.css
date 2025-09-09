@@ -5,9 +5,9 @@
 }
 
 :root{
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Helvetica Neue", sans-serif;
+  --font-body: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Helvetica Neue", sans-serif;
   --font-heading: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Helvetica Neue", sans-serif;
-  --font-display: "Playfair Display", "Noto Serif Display", serif;
+  --font-display: "Plus Jakarta Sans", "Noto Serif Display", serif;
 }
 
 html, body {

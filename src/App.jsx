@@ -4,8 +4,17 @@ import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 
 import RequireAuth from "./routes/RequireAuth";
+import { useConfig } from "./hooks/useConfig";
 
 function App() {
+  const { APP_CONFIG, isDevelopment } = useConfig();
+
+  // Log thông tin ứng dụng trong development mode
+  if (isDevelopment()) {
+    console.log(`🚀 ${APP_CONFIG.NAME} v${APP_CONFIG.VERSION}`);
+    console.log(`📝 ${APP_CONFIG.DESCRIPTION}`);
+  }
+
   return (
     <BrowserRouter>
       <Routes>
