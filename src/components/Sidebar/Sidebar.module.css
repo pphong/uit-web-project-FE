@@ -11,7 +11,7 @@
 
 .sidebar{
   width: 280px;
-  height: 100vh;
+  height: 100vh - 64px;
   background:#fff;
   border-right:1px solid var(--line);
   display:flex;
@@ -33,7 +33,7 @@
 .dropBtn{ width:44px; padding:0; }
 .sidebarCollapsed .addBtn span{ display:none; }
 
-.nav{ display:flex; flex-direction:column; padding:8px; gap:4px; min-height:0; overflow-y:auto; }
+.nav{ display:flex; flex-direction:column; padding:8px; gap:4px; min-height:0; overflow-y:auto;}
 
 /* item */
 .item{

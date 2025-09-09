@@ -179,8 +179,8 @@ export default function Dashboard() {
   // Bar "Tổng quan"
   const overviewData = useMemo(
     () => [
-      { name: "Tổng thu", value: incomeSum },
-      { name: "Tổng chi", value: expenseSum },
+      { name: "Tổng thu", incomeSum },
+      { name: "Tổng chi", expenseSum },
     ],
     [incomeSum, expenseSum]
   );
@@ -335,7 +335,8 @@ export default function Dashboard() {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip formatter={(v) => fmtMoney(v)} />
-              <Bar dataKey="value" radius={[8, 8, 0, 0]} fill="#e03131" />
+              <Bar dataKey="incomeSum" radius={[8, 8, 0, 0]} fill="#2b8a3e" />
+              <Bar dataKey="expenseSum" radius={[8, 8, 0, 0]} fill="#e03131" />
             </BarChart>
           </ResponsiveContainer>
           <div className={styles.overviewNums}>

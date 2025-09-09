@@ -18,6 +18,7 @@ import { AUTH } from "../../state/auth/reducer";
 import { useAuth } from "../../contexts/AuthContext";
 
 import { Tags } from "lucide-react";
+import { ChevronRight } from "@mui/icons-material";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -43,10 +44,10 @@ function Item({
       aria-disabled={disabled}
       title={collapsed ? label : undefined}
     >
-      <span className={styles.itemIcon}>
+      <span className={styles.itemIcon} style={{width: collapsed ? "100%" : 24}}>
         <Icon size={20} />
       </span>
-      <span className={styles.itemLabel}>{label}</span>
+      {!collapsed && <span className={styles.itemLabel}>{label}</span>}
       {rightIcon ? (
         <span className={styles.itemRightIcon}>{rightIcon}</span>
       ) : null}
@@ -318,18 +319,20 @@ export default function Sidebar({ activeKey = "home", onSelect = () => {} }) {
           <Plus size={18} />
           <span>Tìm kiếm mọi thứ</span>
         </button>
-        <button
-          type="button"
-          className={styles.dropBtn}
-          aria-label="Thêm tuỳ chọn"
-        >
-          <ChevronDown size={18} />
-        </button>
+        {collapsed ? null : (
+          <button
+            type="button"
+            className={styles.dropBtn}
+            aria-label="Thêm tuỳ chọn"
+          >
+            <ChevronDown size={18} />
+          </button>
+        )}
       </div>
 
       {/* Nav */}
 
-      <nav className={styles.nav}>
+      <nav className={styles.nav} style={{"align-items": collapsed ? "center" : "normal"}}>
         <Item
           icon={Tags}
           label="Quản lý danh mục"
@@ -358,7 +361,7 @@ export default function Sidebar({ activeKey = "home", onSelect = () => {} }) {
           icon={Edit3}
           label="Ghi chép"
           rightIcon={
-            openNotes ? <ChevronUp size={18} /> : <ChevronDown size={18} />
+            collapsed ? null : (openNotes ? <ChevronUp size={18} /> : <ChevronDown size={18} />)
           }
           onClick={() => setOpenNotes((v) => !v)}
           active={activeKey === "notes"}
@@ -426,7 +429,7 @@ export default function Sidebar({ activeKey = "home", onSelect = () => {} }) {
 
         <div className={styles.bottom}>
           <Item
-            icon={ChevronLeft}
+            icon={!collapsed ? ChevronLeft : ChevronRight}
             label="Thu gọn"
             onClick={() => setCollapsed((v) => !v)}
             collapsed={collapsed}
